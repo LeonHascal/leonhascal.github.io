@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadline Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Asset&family=Babylonica&family=Climate+Crisis&family=Comforter+Brush&family=Kristi&family=Martian+Mono:wght@100..800&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Mynerve&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+    
+    
+
+
+::root       {
+  --asset-font: "Asset", serif;
+  --merriweather: "Merriweather", serif;
+  --comforter: "Comforter Brush", cursive;
+  --martianmono: "Martian Mono", monospace;
+  --mrroboto: "Roboto", sans-serif;
+  --kristi:"Kristi", sans-serif;
+  --climatec: "Climate Crisis", sans-serif;
+}
+
+@use postcss-nested;
+
+.shadow-button-set {
+  margin-top: -70px;
+  margin-bottom:60px;
+  margin-left:0;
+  margin-right:0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2.5vmin;
+  
+  & > li {
+    display: inline-flex;
+    background: black;
+    
+    &:is(:hover, :focus-within) > button:not(:active) {
+      --distance: -10px;
+    }
+  }
+  
+  & button {
+    appearance: none;
+    outline: none;
+    font-size: 2vmin;
+    border: 3px solid black;
+    background: white;
+    
+    --distance: 0;
+    transform: translateX(var(--distance)) translateY(var(--distance));
+    
+    @media (prefers-reduced-motion: no-preference) {
+      will-change: transform;
+      transition: transform .2s ease ;
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  block-size: 100%;
+}
+
+
+
+
+        /* Basic styling for layout and appearance */
+        
+        body {
+				font-family:"Merriweather", sans-serif;
+            line-height: 1.3;
+            margin: 20px;
+            background-color: rgba(25, 130, 210, .7); /* Light grey background */
+            display: flex; /* Use flexbox to center content */
+            justify-content: center; /* Center horizontally */
+            align-items: flex-start; /* Align items to the top */
+            min-height: 95vh; /* Minimum height to push footer down if needed */
+              min-block-size: 100%;
+ 			 display: grid;
+  				place-content: center;
+        }
+        
+        #calculatorContainer {
+            background-color: #ddd; /* White background for the container */
+            max-width: 500px; /* Maximum width */
+            width: 100%; /* Make container responsive */
+            margin: auto; /* Margin around the container */
+            padding: 30px; /* Padding inside the container */
+            border: 3px solid #000; /* Light grey border */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 3px 4px 8px rgba(0,0,0,0.6); /* Subtle shadow */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            font-family:"Mynerve", sans-serif;
+            align-self:center;
+        }
+        h2 {
+            text-align: center; /* Center the heading */
+            color: #111; /* Dark grey color */
+            margin-top: 0; /* Remove top margin */
+            margin-bottom: 15px; /* Add space below heading */
+ 				font-family: "Amatic SC", cursive;
+				font-weight:800;
+        }
+        div {
+            margin-bottom: 20px; /* Space between sections */
+        }
+        label {
+            display: block; /* Make label a block element */
+            margin-bottom: 8px; /* Space below label */
+            font-weight: bold; /* Bold text */
+            color: #222; /* Medium grey color */
+        }
+        input[type="date"], input[type="email"] {
+            width: calc(100% - 22px); /* Full width minus padding and border */
+            padding: 10px; /* Padding inside inputs */
+            border: 3px solid #000; /* Light grey border */
+            border-radius: 5px; /* Rounded corners */
+            box-sizing: border-box; /* Include padding and border in element's total width */
+            font-size: 1em; /* Font size */
+        }
+        .button-group {
+            display: flex; /* Use flexbox for buttons */
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+            gap: 10px; /* Space between buttons */
+            justify-content: center; /* Center buttons */
+        }
+        button {
+            padding: 10px 15px; /* Padding inside buttons */
+            border: 2px solid black; /* solid black border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: .8em; /* Font size */
+            font-weight:800; /* Font weight bolder */
+            text-transform:uppercase;   /* make uppercase */
+           /*  transition: background-color 0.5s ease; /* Smooth transition for background color */
+            flex-grow: 1; /* Allow buttons to grow */
+            min-width: 120px; /* Minimum width for buttons */
+            transition-duration:.5s;
+        }
+  
+        button:hover {
+            opacity: 0.8; /* Slight transparency on hover */
+            filter: hue-rotate(-130deg); 
+            transition-duration:.5s;   
+                }
+                
+                
+        /* Specific button styles */
+        #calc30DaysBefore { background-color: crimson; color: white; } /* Red */
+        #calc30DaysAfter { background-color: DarkSeaGreen; color: white; } /* Green */
+        #calc180DaysAfter { background-color: darkcyan; color: white; } /* Blue */
+        #copyDate { background-color: #ffc107; color: #222; } /* Yellow */
+        #emailDate { background-color: #17a2b8; color: white; } /* Teal */
+
+        #resultArea {
+            margin-top: 25px; /* Space above result area */
+            padding: 20px; /* Padding inside result area */
+            border: 2px dashed #007bff; /* Dashed blue border */
+            background-color: #e9f7ff; /* Light blue background */
+            border-radius: 12px; /* Rounded corners */
+            display: none; /* Initially hidden */
+            text-align: center; /* Center text */
+        }
+        #resultArea p {
+            margin-top: 0; /* Remove top margin */
+            font-size: 1.2em; /* Larger font size */
+            font-weight: bold; /* Bold text */
+            color: #0056b3; /* Darker blue color */
+        }
+        #calculatedDateDisplay {
+             color: #000; /* Dark grey for the date itself */
+        }
+        #emailSection {
+            margin-top: 20px; /* Space above email section */
+            border-top: 1px solid #eee; /* Light grey top border */
+            padding-top: 20px; /* Padding above content */
+        }
+         #emailSection label, #emailSection input, #emailSection button {
+             margin-bottom: 10px; /* Space below elements in email section */
+         }
+         #emailSection input {
+             margin-right: 0; /* Remove margin right for email input */
+         }
+
+         /* Responsive adjustments */
+         @media (max-width: 600px) {
+             #calculatorContainer {
+                 margin: 10px;
+                 padding: 20px;
+             }
+             .button-group {
+                 flex-direction: column; /* Stack buttons vertically on small screens */
+                 gap: 10px; /* Space between stacked buttons */
+             }
+             button {
+                border:2px solid black;
+                 width: 100%; /* Full width when stacked */
+                 min-width: auto; /* Remove min-width constraint */
+             }
+              input[type="date"], input[type="email"] {
+                 width: 100%; /* Full width inputs */
+             }
+         }
+         
+			h2 {
+			font-family: "Merriweather", sans-serif;
+			font-size: 52px;
+			font-weight:900;
+			color:#f7f7f7;
+			text-transform:uppercase;
+			padding-bottom:1px;
+			padding-top:1px;
+			margin-bottom:1px;
+			text-shadow: 1px 1px 1px black, -1px -1px 1px black, 2px -2px 1px black, -2px 2px 1px black, 2px -2px 0px black, -2px 2px 0px black;
+			text-align: center;			
+			}         
+         
+         h3 {
+				font-size:34px;
+				font-weight:400;
+				font-family:"Merriweather", sans-serif;
+				color:#303030;         ;
+         	margin-bottom:5px;
+         	margin-top:1px;
+         	padding-top:1px;
+         	margin-bottom:10px;
+         	padding-bottom:1px;
+         	text-align:center;
+         	line-height:28px;
+         }
+         
+         .instructions {
+				font-size:12px;
+				font-weight:300;
+            font-family: "Merriweather", sans-serif;
+				font-family:sans-serif;
+				line-height: 14px;
+				padding-bottom:6px;
+				cursor:help;
+				color: rgba(20,20,20, .9);
+         	
+         }
+         
+    .instructions b {
+         
+			font-weight:900;
+			   font-style: italic;
+         text-transform:uppercase;
+         color:black;
+				font-family:"Merriweather", sans-serif;
+         }
+         
+         .notice {
+         color:red;
+         font-weight:900;
+         text-decoration: double red underline;
+				font-family:"Merriweather", sans-serif;
+         }
+         
+         .notice b {
+         color:crimson;
+         font-weight:900;
+         text-decoration: double red underline;
+				font-family:"Merriweather", sans-serif;
+         }
+
+    </style>
+</head>
+<body>
+
+<ul class="shadow-button-set">
+  <li><button>Home</button></li>
+  <li><button>EAD Filing Date</button></li>
+  <li><button>Court Filings</button></li>
+  <li><button>Other</button></li>
+  <li><button>Quit</button></li>
+</ul>
+
+<br>
+
+    <div id="calculatorContainer">
+        <h2>Deadline Calculator</h2>
+            <h3>Calculate Deadlines for Immigration Court Filings</h3>
+            <p class="instructions">
+            
+            To calculate the<b> due date for all evidence for your trial </b> enter the date of your Individual Hearing and click "Evidence Due Date" <b class="notice">NOTE:</b> if the Judge set an earlier date then that date set by the Judge is the controlling date.</p>
+             <p class="instructions">  To calculate the <b>deadline to file a Notice of Appeal of an order of removal</b>, enter the date of the Judge's decision and  click "Appeal By"</p>
+     
+       <p class="instructions">        To calculate the <b>deadline to file a Motion to Reopen based on exceptional circumstances</b>, enter the date of the Judge's decision and click "EAD or MTRO"
+            
+            </p>
+
+        <div>
+            <label for="startDate">Select Decision Date:</label>
+            <input type="date" id="startDate">
+        </div>
+
+        <div class="button-group">
+            <button id="calc30DaysBefore">Evidence Due Date</button>
+            <button id="calc30DaysAfter">Appeal</button>
+            <button id="calc180DaysAfter">MTRO</button>
+        </div>
+
+        <div id="resultArea">
+            <p>Calculated Date: <span id="calculatedDateDisplay"></span></p>
+            <button id="copyDate">Copy Date</button>
+
+            <div id="emailSection">
+                <label for="emailRecipient">Email the date to:</label>
+                <input type="email" id="emailRecipient" placeholder="Enter email address">
+                <button id="emailDate">Email Date</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const startDateInput = document.getElementById('startDate');
+        const calc30DaysBeforeBtn = document.getElementById('calc30DaysBefore');
+        const calc30DaysAfterBtn = document.getElementById('calc30DaysAfter');
+        const calc180DaysAfterBtn = document.getElementById('calc180DaysAfter');
+        const calculatedDateDisplay = document.getElementById('calculatedDateDisplay');
+        const copyDateBtn = document.getElementById('copyDate');
+        const emailRecipientInput = document.getElementById('emailRecipient');
+        const emailDateBtn = document.getElementById('emailDate');
+        const resultArea = document.getElementById('resultArea');
+
+        // Variable to store the last calculated date string for copy/email
+        let lastCalculatedDateString = '';
+
+        /**
+         * Calculates a new date based on the selected start date and a number of days difference.
+         * Displays the result and makes the result area visible.
+         * @param {number} days - The number of days to add (positive) or subtract (negative).
+         */
+        function calculateAndDisplayDate(days) {
+            const startDateValue = startDateInput.value;
+
+            // Check if a date has been selected
+            if (!startDateValue) {
+                calculatedDateDisplay.textContent = 'Please select a date first.';
+                lastCalculatedDateString = ''; // Clear stored date if no date selected
+                resultArea.style.display = 'block'; // Show area with message
+                return;
+            }
+
+            // Create a Date object from the input value (YYYY-MM-DD format).
+            // This constructor parses the date string as UTC time midnight, which is usually
+            // appropriate for date-only calculations to avoid timezone issues shifting the date.
+            const startDate = new Date(startDateValue);
+
+            // Check if the parsed date is valid
+            if (isNaN(startDate.getTime())) {
+                 calculatedDateDisplay.textContent = 'Invalid date selected.';
+                 lastCalculatedDateString = '';
+                 resultArea.style.display = 'block'; // Show area with error
+                 return;
+            }
+
+            // Create a new Date object for calculation to avoid modifying the original date input value
+            const calculatedDate = new Date(startDate);
+            // Add or subtract the specified number of days
+            calculatedDate.setDate(startDate.getDate() + days);
+
+            // Format the calculated date as YYYY-MM-DD for consistency and ease of parsing
+            const year = calculatedDate.getFullYear();
+            // getMonth() is 0-indexed, so add 1. padStart ensures two digits (e.g., "01" for January)
+            const month = (calculatedDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = calculatedDate.getDate().toString().padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}`;
+
+            // Display the formatted date to the user
+            calculatedDateDisplay.textContent = formattedDate;
+
+            // Store the calculated date string for the copy and email actions
+            lastCalculatedDateString = formattedDate;
+
+            // Make the result area visible
+            resultArea.style.display = 'block';
+        }
+
+        // Add event listeners to the calculation buttons
+        calc30DaysBeforeBtn.addEventListener('click', () => calculateAndDisplayDate(-30));
+        calc30DaysAfterBtn.addEventListener('click', () => calculateAndDisplayDate(30));
+        calc180DaysAfterBtn.addEventListener('click', () => calculateAndDisplayDate(180));
+
+        // Add event listener for the copy button
+        copyDateBtn.addEventListener('click', () => {
+            // Ensure there is a date to copy
+            if (lastCalculatedDateString) {
+                // Use the modern Clipboard API (requires HTTPS or localhost for security)
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(lastCalculatedDateString)
+                        .then(() => {
+                            // Optional: Provide user feedback that copying was successful
+                            console.log('Date copied to clipboard');
+                            // Temporarily change button text
+                            const originalText = copyDateBtn.textContent;
+                            copyDateBtn.textContent = 'Copied!';
+                            setTimeout(() => {
+                                copyDateBtn.textContent = originalText;
+                            }, 2000); // Revert text after 2 seconds
+                        })
+                        .catch(err => {
+                            // Log error if copying fails
+                            console.error('Failed to copy date: ', err);
+                            alert('Could not copy date.'); // Inform user of failure
+                        });
+                } else {
+                    // Fallback for older browsers or non-secure contexts without Clipboard API
+                    alert('Clipboard API not available. Please copy the date manually: ' + lastCalculatedDateString);
+                }
+            } else {
+                // Alert if there's no calculated date to copy
+                alert('No date calculated yet.');
+            }
+        });
+
+        // Add event listener for the email button
+        emailDateBtn.addEventListener('click', () => {
+            const recipient = emailRecipientInput.value;
+
+            // Validate email recipient and calculated date
+            if (!recipient) {
+                alert('Please enter an email address.');
+                return;
+            }
+            if (!lastCalculatedDateString) {
+                alert('No date calculated yet.');
+                return;
+            }
+
+            // Encode the subject and body for the mailto URL
+            const subject = encodeURIComponent('Calculated Deadline Date');
+            const body = encodeURIComponent(`Based on your selection, the calculated date is: ${lastCalculatedDateString}`);
+
+            // Create the mailto URL
+            const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+
+            // Open the user's default email client with the mailto URL
+            window.location.href = mailtoUrl;
+        });
+
+        // Initially hide the result area until a calculation is made
+        resultArea.style.display = 'none';
+
+    </script>
+
+</body>
+</html>

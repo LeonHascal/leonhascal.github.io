@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAD Filing Date Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    
+		h1 {
+		font-family:"Merriweather", sans-serif;		
+		font-weight:900;
+		font-size:48px;
+		line-height: 20px;
+		margin-bottom:-5px;
+		}    
+    
+        body {
+        		color:white;
+            font-family: 'Inter', sans-serif;
+            background-color:  #1d1d1d;        /*  #f3f4f6;  Light gray background */
+        }
+        .calculator-card {
+            background-color: rgba(15,195,215,0.4);;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 6px -1px rgba(160, 16, 160, 0.4), 0 2px 4px -1px rgba(160, 16, 160, 0.26);
+            padding: 1.5rem; /* 24px */
+            margin-bottom: 2rem; /* 32px */
+            color:white;
+        }
+        .input-field {
+            border: 1px solid #d1d5db; /* Gray-300 */
+            border-radius: 0.5rem; /* 8px */
+            padding: 0.75rem 1rem; /* 12px 16px */
+            width: 100%;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            border-color: #3b82f6; /* Blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+        .calculate-button {
+            background-color: rebeccapurple;     /*  #3b82f6;  Blue-500 */
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem; /* 12px 24px */
+            border-radius: 0.5rem; /* 8px */
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .calculate-button:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .result-area {
+            margin-top: 1rem; /* 16px */
+            padding: 1rem; /* 16px */
+            background-color: #eef2ff; /* Indigo-50 */
+            border-radius: 0.5rem; /* 8px */
+            border: 1px solid #c7d2fe; /* Indigo-200 */
+            color: #3730a3; /* Indigo-800 */
+        }
+        .error-message {
+            color: #ef4444; /* Red-500 */
+            font-size: 0.875rem; /* 14px */
+            margin-top: 0.5rem; /* 8px */
+        }
+        
+			.labeltxt {
+			color:white!important;			
+			}
+        
+			.input-field {
+			
+			background-color:rgba(110,10,110,.2);
+			color:white;
+			border: 1px solid rebeccapurple;			
+			
+			}        
+			
+			.instructions {
+
+			font-size:.9em;
+			line-height: 1.3em;
+			
+			}
+        
+        .instructions-title {
+			font-size:.9em;
+			line-height:1.3em;
+			font-weight:800;        
+         margin-bottom:10px;
+        
+        }
+        
+        .instructions-container {
+         display:block;
+			padding:10px;
+			border:4px inset rgba(15,195,195,0.3);
+			border-radius: 12px;
+			background-color:rgba(160, 16, 160, 0.2);
+			color:white;        
+         width:650px;
+         align-self:center;
+         box-shadow: 0 4px 6px -1px rgba(60, 16, 160, 0.4), 0 2px 4px -1px rgba(60, 16, 160, 0.66);
+         margin:auto;
+        }
+        
+			.notinstructions {
+			font-size:1em;
+			line-height: 1.3em;
+			color:white;
+			font-style: italic;
+			font-family:"Merriweather", serif;			
+			
+			}        
+        
+
+        
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+<ul class="shadow-button-set">
+  <li><button><a href="home.html">Home</a></button></li>
+  <li><button>EAD Filing Date</button></li>
+  <li><button>Court Filings</button></li>
+  <li><button>Other</button></li>
+  <li><button>Quit</button></li>
+</ul>
+
+<br>
+
+
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8 labeltxt">EAD Filing Date Calculator</h1>
+        <p class="notinstructions"> This tool is designed to help you determine the date when you are eligible to submit a Form I-765 Application for Employment Authorization based on a pending Application for Asylum. </p>
+       <br>
+
+        <!-- Tool 1: Date-based Calculation -->
+        <div class="calculator-card">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 labeltxt">Calculate from Filing Date</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="inputDate" class="block text-sm font-medium text-gray-700 mb-1 labeltxt">Enter a Date Form I-589 was Filed:</label>
+                    <input type="date" id="inputDate" class="input-field">
+                </div>
+                <button id="calculateDateButton" class="calculate-button w-full sm:w-auto">Calculate</button>
+                <div id="dateResultArea" class="result-area hidden">
+                    <p id="dateResult150"></p>
+                    <p id="dateResult180"></p>
+                </div>
+                <div id="dateError" class="error-message hidden"></div>
+            </div>
+        </div>
+
+        <!-- Tool 2: Number-based Calculation -->
+        <div class="calculator-card">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 labeltxt">Calculate Based on Asylum Clock</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="inputNumber" class="block text-sm font-medium text-gray-700 mb-1 labeltxt">Enter Number of Days on Asylum Clock:</label>
+                    <input type="number" id="inputNumber" placeholder="e.g., 100" class="input-field">
+                </div>
+                <button id="calculateNumberButton" class="calculate-button w-full sm:w-auto">Calculate</button>
+                <div id="numberResultArea" class="result-area hidden">
+                    <p id="numberResult"></p>
+                </div>
+                <div id="numberError" class="error-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to format date as MM/DD/YYYY
+        function formatDate(date) {
+            if (!date || isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        // --- Tool 1: Date-based Calculation ---
+        const inputDateEl = document.getElementById('inputDate');
+        const calculateDateButtonEl = document.getElementById('calculateDateButton');
+        const dateResultAreaEl = document.getElementById('dateResultArea');
+        const dateResult150El = document.getElementById('dateResult150');
+        const dateResult180El = document.getElementById('dateResult180');
+        const dateErrorEl = document.getElementById('dateError');
+
+        calculateDateButtonEl.addEventListener('click', () => {
+            const dateString = inputDateEl.value;
+            dateResultAreaEl.classList.add('hidden');
+            dateErrorEl.classList.add('hidden');
+
+            if (!dateString) {
+                dateErrorEl.textContent = 'Please enter a valid date.';
+                dateErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            // The input type="date" returns date in YYYY-MM-DD format.
+            // JavaScript's Date constructor can parse this, but it might interpret it as UTC.
+            // To ensure it's treated as local time, we can split and construct.
+            const parts = dateString.split('-');
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+            const day = parseInt(parts[2], 10);
+            
+            const baseDate = new Date(year, month, day);
+
+            if (isNaN(baseDate.getTime())) {
+                dateErrorEl.textContent = 'Invalid date entered. Please use MM/DD/YYYY format.';
+                dateErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Calculate date + 150 days
+            const datePlus150 = new Date(baseDate);
+            datePlus150.setDate(baseDate.getDate() + 150);
+
+            // Calculate date + 180 days
+            const datePlus180 = new Date(baseDate);
+            datePlus180.setDate(baseDate.getDate() + 180);
+
+            dateResult150El.textContent = `150 days from ${formatDate(baseDate)} is: ${formatDate(datePlus150)}`;
+            dateResult180El.textContent = `180 days from ${formatDate(baseDate)} is: ${formatDate(datePlus180)}`;
+            dateResultAreaEl.classList.remove('hidden');
+        });
+
+        // --- Tool 2: Number-based Calculation ---
+        const inputNumberEl = document.getElementById('inputNumber');
+        const calculateNumberButtonEl = document.getElementById('calculateNumberButton');
+        const numberResultAreaEl = document.getElementById('numberResultArea');
+        const numberResultEl = document.getElementById('numberResult');
+        const numberErrorEl = document.getElementById('numberError');
+
+        calculateNumberButtonEl.addEventListener('click', () => {
+            const userNumStr = inputNumberEl.value;
+            numberResultAreaEl.classList.add('hidden');
+            numberErrorEl.classList.add('hidden');
+
+            if (userNumStr === '') {
+                numberErrorEl.textContent = 'Please enter a number.';
+                numberErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            const userNum = parseInt(userNumStr, 10);
+
+            if (isNaN(userNum)) {
+                numberErrorEl.textContent = 'Invalid number entered. Please enter a whole number.';
+                numberErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (userNum >= 150) {
+                numberResultEl.textContent = 'You can file now.';
+            } else {
+                const remainingDays = 150 - userNum;
+                const today = new Date();
+                
+                // Clear time part of today's date to avoid inconsistencies
+                today.setHours(0, 0, 0, 0);
+
+                const filingDate = new Date(today);
+                filingDate.setDate(today.getDate() + remainingDays);
+                numberResultEl.textContent = `You can file on: ${formatDate(filingDate)} (which is ${remainingDays} days from today, ${formatDate(today)}).`;
+            }
+            numberResultAreaEl.classList.remove('hidden');
+        });
+
+    </script>
+    <br>
+     <span class="instructions-container">
+	        <p class="instructions-title">Instructions:</p>
+        <p class="instructions">  You become eligible for employment authorization once your asylum application has been pending for 180 days but you can submit your Form I-765 after 150 days.<br><br> The <b>first tool</b> allows you to calculate the date you can file for employment authorization based on the date you filed your asylum application.<br><br> The <b>second tool</b> will calculate the date you can file for employment authorization based on the number of days on your asylum clock, which you can obtain by calling the automated case status system number at 1-800-898-7180 and entering your A# when prompted to do so and then picking the option for "Asylum clock." </p>
+        </span>
+</body>
+</html>
