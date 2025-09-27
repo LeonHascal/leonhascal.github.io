@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Calendar WebApp</title>
+<meta name="description" content="This is a calendar webapp made for internal use">
+<meta name="keywords" content="webapp">
+<meta name="author" content="Joseph Caraccio">
+<meta property="og:title" content="">
+<meta property="og:description" content="">
+<meta property="og:image" content="">
+<meta property="og:url" content="">
+<meta property="og:type" content="">
+<meta name="twitter:card" content="">
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="">
+<link rel="icon" href="https://www.jbclaw.us/wp-content/uploads/2025/08/cropped-jbc-law-office-dumdum.png">
+<link rel="apple-touch-icon" href="https://www.jbclaw.us/wp-content/uploads/2025/08/cropped-jbc-law-office-dumdum.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+
+  <title>Local Calendar — Recurring events, reminders, export/import</title>
+
+  <!-- W3.CSS framework + Fashion Colors -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">	
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2024.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2025.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400..700&family=Jacquard+12&family=Montserrat:ital,wght@0,100..900;1,100..900&family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+
+
+    :root{
+      --content-max:1100px;
+      --day-min-h:86px;
+    }
+
+
+.mont {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.mont-700 {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+.mont-900 {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+
+.mont-200 {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+
+.bebas {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.vt323 {
+  font-family: "VT323", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.jacq {
+  font-family: "Jacquard 12", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.caveat {
+  font-family: "Caveat", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.caveat-700 {
+  font-family: "Caveat", cursive;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+
+
+    body.calendar-body {
+      font-family:"Montserrat", sans-serif;      
+      margin:0;
+      background: #c3c3c3;
+    }
+
+	#currentMonthLabel {
+				font-family:"Montserrat", sans-serif!important;
+				font-size:1.4em;
+				font-weight:800;
+				font-color:black;
+				text-transform:uppercase;
+				}
+
+    /* header */
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.5rem; position:sticky; top:0; z-index:3; }
+    .month-nav { display:flex; gap:.4rem; align-items:center; }
+
+    /* calendar */
+    .calendar-wrap { max-width:var(--content-max); margin:12px auto; padding:8px; }
+    .weekday-row { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:6px; }
+    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+    .day-cell { background: white; min-height: var(--day-min-h); padding:8px; border-radius:8px; box-shadow: 0 1px 0 rgba(0,0,0,0.06); cursor:pointer; display:flex; flex-direction:column; overflow:hidden; }
+    .day-cell.empty { background: transparent; cursor:text; box-shadow:none; }
+    .day-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .day-number { font-weight:700; font-size:.95rem; }
+    .events-wrap { display:flex; flex-direction:column; gap:6px; overflow:auto; max-height:250px; padding-right:4px; }
+
+    .event-pill { padding:6px 8px; border-radius:8px; color:white; font-size:.82rem; display:flex; justify-content:space-between; align-items:center; gap:8px; box-shadow: 0 1px 0 rgba(0,0,0,0.05); }
+    .event-left { display:flex; gap:8px; align-items:center; }
+    .event-time { font-weight:700; font-size:.86rem; opacity:.95; min-width:36px; }
+    .event-title { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
+    .today { outline: 2px solid rgba(0,0,0,0.06); }
+
+    /* modal */
+    .w3-modal .w3-modal-content { border-radius:8px; padding:0; overflow:hidden; }
+    .form-row { display:flex; gap:.6rem; }
+    .form-col { flex:1; }
+
+    /* small-screen */
+    @media (max-width:768px){
+      :root { --day-min-h:70px; }
+      .event-title { max-width:90px; font-size:.82rem; }
+      .events-wrap { max-height:160px; }
+    }
+
+    /* dark mode */
+    .dark-mode { background:#0b0b0b; color:#ddd; }
+    .dark-mode .day-cell { background:#111; box-shadow:none; border:1px solid rgba(255,255,255,0.03); }
+    .dark-mode .w3-white { background:#111 !important; color:#ddd !important; }
+    .muted { color:#777; font-size:.9rem; }
+
+    /* tiny helpers */
+    .tiny { font-size:.8rem; color:#666; }
+    .w3-dropdown-content.w3-card-4 { min-width:240px; right:0; left:auto; z-index:9999;}
+
+/* Ensure settings dropdown always appears on top */
+.w3-dropdown-content {
+  z-index: 9999 !important;
+  position: absolute; /* ensure it floats above */
+}
+
+/* portal dropdown styles */
+.portal-dropdown {
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  min-width: 240px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+}
+
+
+  </style>
+</head>
+<body class="calendar-body w3-dark-gray">
+
+  <!-- Top bar -->
+  <div class="w3-bar w3-white w3-card topbar calendar-header" style="z-index:99;">
+    <div style="display:flex;align-items:center;gap:.6rem;">
+      <button id="menuBtn" class="w3-button w3-round w3-light-grey" style="z-index:101;" title="Menu">☰</button>
+      <h3 style="margin:0; color:gray; font-weight:200;" class="mont">Jo's Calendar Thing</h3>
+      <div id="currentMonthLabel" class="tiny muted caveat" style="margin-left:6px"></div>
+    </div>
+
+    <div class="month-nav vt323">
+      <button id="prevMonth" class="w3-button w3-round w3-2025-french-roast w3-hover-opacity">‹ Prev</button>
+      <button id="todayBtn" class="w3-button w3-round w3-2024-italian-plum w3-text-white">Today</button>
+      <button id="nextMonth" class="w3-button w3-round w3-2025-french-roast w3-hover-opacity">Next ›</button>
+    </div>
+
+    <div style="display:flex; gap:.5rem; align-items:center;" class="vt323">
+      <label class="tiny muted vt323" for="viewSelect">View</label>
+      <select id="viewSelect" class="w3-select w3-border vt323" style="width:120px;">
+        <option value="month" selected>Month</option>
+        <option value="agenda">Agenda</option>
+      </select>
+
+
+
+
+
+   <div class="w3-dropdown-hover vt323" style="z-index:103;">
+        <button class="w3-button w3-round w3-2024-brush vt323" style="z-index:101">Settings ▾</button>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4 vt323" style="z-index:200">
+          <div class="w3-container">
+            <label class="w3-text vt323">Theme</label>
+            <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+              <label class="w3-radio"><input type="radio" name="theme" value="light"></label><span class="tiny">Light</span>
+              <label class="w3-radio"><input type="radio" name="theme" value="dark"></label><span class="tiny">Dark</span>
+            </div>
+	
+
+            <hr style="margin:8px 0">
+
+            <button id="exportBtn" class="w3-button w3-block w3-2024-brush w3-border w3-hover-light-grey vt323">Export backup</button>
+
+            <label class="w3-button w3-block w3-2025-dejavu-blu w3-border w3-hover-light-grey vt323" style="cursor:pointer">
+              Import backup <input id="importFile" type="file" accept=".json" style="display:none">
+            </label>
+
+            <hr style="margin:8px 0">
+
+            <a id="externalLink" class="w3-button w3-block w3-2025-dejavu-blu w3-border w3-hover-light-grey vt323" href="https://jbclaw.us/tools" target="_blank" rel="noopener">Visit external page</a>
+
+            <hr style="margin:8px 0">
+
+            <div class="tiny muted">App info</div>
+            <div class="tiny">Local-only calendar • Notifications require permission • Delete removes entire series</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar container -->
+  <div class="calendar-wrap w3-content vt323">
+    <div class="w3-white w3-card vt323" style="padding:10px;">
+      <div id="weekdayHeader" class="weekday-row"></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+
+      <div id="agendaView" style="display:none; margin-top:10px;">
+        <h4 class="mont w3-text-black">Upcoming events</h4>
+        <div id="agendaList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event modal -->
+  <div id="eventModal" class="w3-modal vt323">
+    <div class="w3-modal-content w3-animate-top w3-card-4" style="max-width:560px;">
+      <header class="w3-container w3-2024-italian-plum w3-white" style="padding:10px 14px;">
+        <span onclick="closeEventModal()" class="w3-button w3-display-topright">✕</span>
+        <h3 id="modalTitle" style="margin:0">Add event</h3>
+      </header>
+
+      <div class="w3-container" style="padding:12px;">
+        <form id="eventForm" onsubmit="return false;">
+          <input type="hidden" id="eventId">
+
+          <label>Title</label>
+          <input id="eventTitle" class="w3-input w3-border" required>
+
+          <div class="form-row" style="margin-top:8px;">
+            <div class="form-col">
+              <label>Date</label>
+              <input id="eventDate" type="date" class="w3-input w3-border" required>
+            </div>
+            <div style="width:140px;">
+              <label>Time</label>
+              <input id="eventTime" type="time" class="w3-input w3-border">
+            </div>
+          </div>
+
+          <label class="w3-margin-top">Description</label>
+          <textarea id="eventDesc" class="w3-input w3-border" rows="2"></textarea>
+
+          <div class="form-row" style="margin-top:8px;">
+            <div class="form-col">
+              <label>Color</label>
+              <select id="eventColor" class="w3-select w3-border">
+                <option value="w3-2025-dejavu-blu">Blu</option>
+		<option value="w3-2024-italian-plum">Italian Plum</option>
+                <option value="w3-lime">Lime</option>
+		<option value="w3-2024-orangeade">orangeade</option>
+                <option value="w3-2024-watercress">Watercress</option>
+                <option value="w3-red">Red</option>
+                <option value="w3-purple">Purple</option>
+                <option value="w3-pink">Pink</option>
+                <option value="w3-black">Black</option>
+                <option value="w3-2025-crown-blue">crown blu</option>
+                <option value="w3-deep-purple">Deep-Purple</option>
+                <option value="w3-light-blue">Light-Blue</option>
+              </select>
+            </div>
+            <div style="width:150px;">
+              <label>Reminder (mins before)</label>
+              <input id="eventReminder" type="number" class="w3-input w3-border" min="0" value="15">
+            </div>
+          </div>
+
+          <label class="w3-margin-top">Recurrence</label>
+          <select id="eventRepeat" class="w3-select w3-border">
+            <option value="none">None</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly (same weekday)</option>
+            <option value="monthly">Monthly (same date)</option>
+            <option value="yearly">Yearly</option>
+          </select>
+
+          <div style="display:flex; gap:.6rem; justify-content:space-between; margin-top:12px;">
+            <div>
+              <button id="saveEventBtn" class="w3-button w3-2024-orangeade w3-round w3-hover-lime">Save</button>
+              <button id="deleteEventBtn" class="w3-button w3-red w3-round w3-hover-red w3-hover-text-yellow" style="display:none">Delete</button>
+            </div>
+            <button onclick="closeEventModal()" class="w3-button w3-gray w3-hover-red w3-round">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+	<div class="w3-container w3-center tiny muted vt323" style="margin-top:4px;">
+
+	Local-only calendar • events are stored in your browser <br>
+	export data using the menu to import into another device
+
+
+	</div>
+<br>
+
+<footer class="w3-2024-italian-plum w3-text-white w3-small w3-center w3-margin-top w3-padding vt323"> 
+<p>&copy; 2025  Joseph Caraccio  All Rights Reserved  
+
+</footer>
+
+<script>
+/* Calendar app (single-file)
+   - Supports recurring events: none, daily, weekly, monthly, yearly
+   - Events stored in localStorage (STORAGE_KEY)
+   - Notifications via Notification API (only while page is open)
+   - Export/import JSON backup
+   - Delete removes entire series (no exceptions)
+*/
+
+(function(){
+  'use strict';
+
+  /* ----------------------
+     Constants & State
+     ---------------------- */
+  const STORAGE_KEY = 'local_calendar_events_v3';
+  let events = []; // array of event objects
+  // event structure:
+  // { id, title, desc, date: 'YYYY-MM-DD' (start), time: 'HH:MM' or '', color, reminderMins: int, repeat: 'none'|'daily'|'weekly'|'monthly'|'yearly' }
+
+  let viewDate = new Date(); // focal month for month view
+  let scheduledReminders = {}; // eventId -> timeout id
+
+  /* ----------------------
+     Helpers
+     ---------------------- */
+  const $ = (id)=> document.getElementById(id);
+  function uid(){ return 'ev_' + Math.random().toString(36).slice(2,9); }
+  function loadEvents(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      events = raw ? JSON.parse(raw) : [];
+      if(!Array.isArray(events)) events = [];
+    } catch(e){
+      console.error('Failed to load events', e);
+      events = [];
+    }
+  }
+  function saveEvents(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+  function parseISODate(iso){
+    const [y,m,d] = iso.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function formatDateParts(date){
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+  }
+
+  // compare dates (YYYY-MM-DD) ignoring time
+  function dateCompare(aISO, bISO){
+    if(aISO === bISO) return 0;
+    return aISO > bISO ? 1 : -1;
+  }
+
+  /* ----------------------
+     Recurrence logic
+     ---------------------- */
+
+  // Determine if an event has an occurrence on 'dateISO' (string)
+  // recurrences start at event.date and include date if >= start.
+  function eventOccursOn(event, dateISO){
+    const target = parseISODate(dateISO);
+    const start = parseISODate(event.date);
+    if(target < start) return false;
+    if(event.repeat === 'none' || !event.repeat) {
+      return event.date === dateISO;
+    }
+    if(event.repeat === 'daily') {
+      return target >= start;
+    }
+    if(event.repeat === 'weekly') {
+      // same weekday
+      return target.getDay() === start.getDay();
+    }
+    if(event.repeat === 'monthly') {
+      // same day-of-month; if start day greater than days in month, skip (no occurrence)
+      return target.getDate() === start.getDate();
+    }
+    if(event.repeat === 'yearly') {
+      return target.getDate() === start.getDate() && target.getMonth() === start.getMonth();
+    }
+    return false;
+  }
+
+  // Find the next occurrence of an event strictly after now (or at/after now if includeNow true)
+  // Returns a Date object or null if cannot reasonably compute.
+  function nextOccurrenceDate(event, includeNow=false){
+    const now = new Date();
+    const start = parseISODate(event.date);
+
+    // helper: event datetime for a given dateIso string
+    function eventDateTimeFor(dateISO){
+      const base = parseISODate(dateISO);
+      if(event.time){
+        const [hh,mm] = event.time.split(':').map(Number);
+        base.setHours(hh, mm, 0, 0);
+      } else {
+        // treat all-day events as 09:00 local time (configurable)
+        base.setHours(9,0,0,0);
+      }
+      return base;
+    }
+
+    // simple for non-repeat
+    if(!event.repeat || event.repeat === 'none'){
+      const dt = eventDateTimeFor(event.date);
+      if(includeNow) {
+        return dt >= now ? dt : null;
+      }
+      return dt > now ? dt : null;
+    }
+
+    // repeating: start searching from today up to reasonable horizon (2 years)
+    const horizonYears = 2;
+    const endSearch = new Date(now.getFullYear() + horizonYears, now.getMonth(), now.getDate()+1);
+
+    // initial candidate date: max(start, today-start) depending
+    let candidate = new Date(Math.max(start.getTime(), new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()));
+
+    // But ensure candidate not before start
+    if(candidate < start) candidate = new Date(start.getTime());
+
+    // Guarantee we don't loop forever: limit iterations
+    let attempts = 0;
+    while(candidate <= endSearch && attempts < 2000){
+      const iso = formatDateParts(candidate);
+      if(eventOccursOn(event, iso)){
+        const dt = eventDateTimeFor(iso);
+        if(includeNow ? dt >= now : dt > now) return dt;
+      }
+
+      // increment candidate based on recurrence type to be efficient
+      if(event.repeat === 'daily') {
+        candidate.setDate(candidate.getDate() + 1);
+      } else if(event.repeat === 'weekly') {
+        candidate.setDate(candidate.getDate() + 1); // check every day but early return when matching weekday
+      } else if(event.repeat === 'monthly') {
+        // move to next day to test date equality OR step by one day until month wrap — simpler and safe
+        candidate.setDate(candidate.getDate() + 1);
+      } else if(event.repeat === 'yearly') {
+        candidate.setDate(candidate.getDate() + 1);
+      } else {
+        candidate.setDate(candidate.getDate() + 1);
+      }
+      attempts++;
+    }
+    return null;
+  }
+
+  /* ----------------------
+     Rendering
+     ---------------------- */
+
+  const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const weekdayHeader = $('weekdayHeader');
+  const calendarGrid = $('calendarGrid');
+  const currentMonthLabel = $('currentMonthLabel');
+  const agendaView = $('agendaView');
+  const agendaList = $('agendaList');
+  const viewSelect = $('viewSelect');
+
+  function initUI(){
+    // weekday header
+    weekdayHeader.innerHTML = weekdayNames.map(d => `<div class="w3-center muted tiny">${d}</div>`).join('');
+    // attach controls
+    $('prevMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1, 1); render(); });
+    $('nextMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 1); render(); });
+    $('todayBtn').addEventListener('click', ()=>{ viewDate = new Date(); render(); });
+    viewSelect.addEventListener('change', onViewChange);
+
+    // menu button toggles settings dropdown display class
+    document.getElementById('menuBtn').addEventListener('click', ()=>{
+      document.querySelector('.w3-dropdown-hover').classList.toggle('w3-show');
+    });
+
+    // export/import hooks
+    $('exportBtn').addEventListener('click', exportBackup);
+    $('importFile').addEventListener('change', handleImportFile);
+
+    // theme radios
+    const radios = document.getElementsByName('theme');
+    for(const r of radios){
+      r.addEventListener('change', ()=>{ applyTheme(r.value); localStorage.setItem('local_calendar_theme', r.value); });
+    }
+
+    // event modal hooks
+    $('saveEventBtn').addEventListener('click', onSaveEvent);
+    $('deleteEventBtn').addEventListener('click', onDeleteEvent);
+  }
+
+  function onViewChange(){
+    const v = viewSelect.value;
+    if(v === 'agenda'){
+      $('calendarGrid').style.display = 'none';
+      $('weekdayHeader').style.display = 'none';
+      agendaView.style.display = 'block';
+      renderAgenda();
+    } else {
+      $('calendarGrid').style.display = 'grid';
+      $('weekdayHeader').style.display = 'grid';
+      agendaView.style.display = 'none';
+      renderMonth();
+    }
+  }
+
+  function render(){
+    currentMonthLabel.textContent = viewDate.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+    if(viewSelect.value === 'agenda') {
+      renderAgenda();
+    } else {
+      renderMonth();
+    }
+  }
+
+  function renderMonth(){
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const startIndex = firstOfMonth.getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const totalCells = Math.ceil((startIndex + daysInMonth) / 7) * 7;
+
+    calendarGrid.innerHTML = '';
+
+    const today = new Date();
+    const todayISOstr = formatDateParts(today);
+
+    for(let i=0;i<totalCells;i++){
+      const cell = document.createElement('div');
+      cell.className = 'day-cell w3-card';
+      const dayNum = i - startIndex + 1;
+      if(i < startIndex || dayNum > daysInMonth){
+        cell.classList.add('empty');
+        cell.innerHTML = '&nbsp;';
+      } else {
+        const dateISO = formatDateParts(new Date(year, month, dayNum));
+        const head = document.createElement('div');
+        head.className = 'day-head';
+        const dn = document.createElement('div');
+        dn.className = 'day-number';
+        dn.textContent = dayNum;
+        head.appendChild(dn);
+        cell.appendChild(head);
+
+        if(dateISO === todayISOstr) cell.classList.add('today');
+
+        const evWrap = document.createElement('div');
+        evWrap.className = 'events-wrap';
+
+        const dayEvents = occurrencesOnDate(dateISO); // returns event occurrences objects
+        // show up to 4
+        dayEvents.slice(0,4).forEach(occ => {
+          const ev = occ.event;
+          const pill = document.createElement('div');
+          pill.className = `event-pill ${ev.color}`;
+          const left = document.createElement('div'); left.className = 'event-left';
+          const timeSpan = document.createElement('span'); timeSpan.className = 'event-time';
+          timeSpan.textContent = ev.time ? ev.time : 'All';
+          const titleSpan = document.createElement('span'); titleSpan.className='event-title';
+          titleSpan.textContent = ev.title;
+          left.appendChild(timeSpan); left.appendChild(titleSpan);
+
+          const editBtn = document.createElement('button');
+          editBtn.className = 'w3-button w3-tiny w3-transparent';
+          editBtn.innerHTML = '✎';
+          editBtn.onclick = (e)=>{ e.stopPropagation(); openEventModalForOccurrence(ev, dateISO); };
+
+          pill.appendChild(left);
+          pill.appendChild(editBtn);
+          evWrap.appendChild(pill);
+        });
+
+        if(dayEvents.length > 4){
+          const more = document.createElement('div');
+          more.className = 'tiny muted';
+          more.textContent = `${dayEvents.length - 4} more...`;
+          evWrap.appendChild(more);
+        }
+
+        cell.appendChild(evWrap);
+
+        cell.onclick = ()=> openEventModalForOccurrence(null, dateISO);
+      }
+      calendarGrid.appendChild(cell);
+    }
+  }
+
+  // For a given date ISO, return list of occurrences: { event, occurrenceDateISO }
+  // For recurring events we treat each included occurrence as an occurrence and return the base event object.
+  function occurrencesOnDate(dateISO){
+    const list = [];
+    events.forEach(ev => {
+      if(eventOccursOn(ev, dateISO)){
+        list.push({ event: ev, dateISO });
+      }
+    });
+    // sort by time (empty times come last)
+    list.sort((a,b)=>{
+      const ta = a.event.time || '99:99';
+      const tb = b.event.time || '99:99';
+      return ta > tb ? 1 : (ta < tb ? -1 : 0);
+    });
+    return list;
+  }
+
+  function renderAgenda(){
+    // show upcoming occurrences for next 60 days (configurable)
+    const now = new Date();
+    const daysAhead = 60;
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysAhead);
+    const occurrences = [];
+
+    // for each event, try to find occurrences between today and end date
+    for(const ev of events){
+      // scan from max(start, today) to end
+      let candidate = parseISODate(ev.date);
+      if(candidate < new Date(now.getFullYear(), now.getMonth(), now.getDate())) candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      // limit to avoid heavy loops
+      const limitIter = 1000;
+      let iter = 0;
+      while(candidate <= end && iter < limitIter){
+        const iso = formatDateParts(candidate);
+        if(eventOccursOn(ev, iso)){
+          // create datetime
+          const dt = new Date(candidate.getTime());
+          if(ev.time){
+            const [hh,mm] = ev.time.split(':').map(Number);
+            dt.setHours(hh, mm, 0, 0);
+          } else {
+            dt.setHours(9,0,0,0);
+          }
+          if(dt >= now) occurrences.push({ event: ev, dt, iso });
+        }
+        candidate.setDate(candidate.getDate() + 1);
+        iter++;
+      }
+    }
+
+    // sort occurrences by datetime
+    occurrences.sort((a,b)=> a.dt - b.dt );
+
+    // render top 200 occurrences (practical)
+    const maxShow = 200;
+    const slice = occurrences.slice(0, maxShow);
+
+    agendaList.innerHTML = '';
+    if(slice.length === 0){
+      agendaList.innerHTML = '<div class="muted tiny">No upcoming events.</div>';
+      return;
+    }
+
+    slice.forEach(occ => {
+      const ev = occ.event;
+      const card = document.createElement('div');
+      card.className = 'w3-card w3-padding w3-margin-bottom';
+      card.style.display = 'flex';
+      card.style.justifyContent = 'space-between';
+      card.style.alignItems = 'center';
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:700">${ev.title}</div>
+        <div class="tiny muted">${occ.iso} ${ev.time ? ev.time : ''}</div>
+        <div class="tiny">${ev.desc || ''}</div>`;
+      const right = document.createElement('div');
+      const openBtn = document.createElement('button');
+      openBtn.className = 'w3-button w3-small ' + ev.color;
+      openBtn.textContent = 'Open';
+      openBtn.onclick = ()=> openEventModalForOccurrence(ev, occ.iso);
+      right.appendChild(openBtn);
+      card.appendChild(left);
+      card.appendChild(right);
+      agendaList.appendChild(card);
+    });
+  }
+
+  /* ----------------------
+     Event modal & CRUD
+     ---------------------- */
+
+  const eventModal = $('eventModal');
+  const eventIdInput = $('eventId');
+  const eventTitleInput = $('eventTitle');
+  const eventDescInput = $('eventDesc');
+  const eventDateInput = $('eventDate');
+  const eventTimeInput = $('eventTime');
+  const eventColorInput = $('eventColor');
+  const eventReminderInput = $('eventReminder');
+  const eventRepeatInput = $('eventRepeat');
+  const modalTitle = $('modalTitle');
+  const deleteBtn = $('deleteEventBtn');
+
+  // Open modal to create a new event on dateISO or to edit an existing event occurrence.
+  // If baseEvent provided, we edit that event (the entire series). Deleting will delete whole series.
+  // dateISO parameter is the occurrence date (useful to prefill date when creating).
+  function openEventModalForOccurrence(baseEvent, dateISO){
+    modalTitle.textContent = baseEvent ? 'Edit event (entire series)' : 'Add event';
+
+    if(baseEvent){
+      eventIdInput.value = baseEvent.id;
+      eventTitleInput.value = baseEvent.title;
+      eventDescInput.value = baseEvent.desc || '';
+      // When editing, show the original start date in the form
+      eventDateInput.value = baseEvent.date;
+      eventTimeInput.value = baseEvent.time || '';
+      eventColorInput.value = baseEvent.color || 'w3-blue';
+      eventReminderInput.value = baseEvent.reminderMins != null ? baseEvent.reminderMins : 15;
+      eventRepeatInput.value = baseEvent.repeat || 'none';
+      deleteBtn.style.display = 'inline-block';
+    } else {
+      eventIdInput.value = '';
+      eventTitleInput.value = '';
+      eventDescInput.value = '';
+      eventDateInput.value = dateISO || todayISO();
+      eventTimeInput.value = '';
+      eventColorInput.value = 'w3-blue';
+      eventReminderInput.value = 15;
+      eventRepeatInput.value = 'none';
+      deleteBtn.style.display = 'none';
+    }
+    eventModal.style.display = 'block';
+  }
+
+  function closeEventModal(){
+    eventModal.style.display = 'none';
+  }
+
+  // Save or create event
+  function onSaveEvent(){
+    const id = eventIdInput.value || uid();
+    const title = eventTitleInput.value.trim();
+    if(!title){ alert('Title required'); return; }
+    const date = eventDateInput.value;
+    if(!date){ alert('Date required'); return; }
+    const time = eventTimeInput.value || '';
+    const color = eventColorInput.value || 'w3-blue';
+    const reminderMins = Math.max(0, parseInt(eventReminderInput.value || '0', 10));
+    const repeat = eventRepeatInput.value || 'none';
+    const desc = eventDescInput.value.trim();
+
+    const ev = { id, title, desc, date, time, color, reminderMins, repeat };
+
+    const idx = events.findIndex(x => x.id === id);
+    if(idx >= 0) events[idx] = ev; else events.push(ev);
+    saveEvents();
+    scheduleAllReminders();
+    closeEventModal();
+    render();
+  }
+
+  // Delete entire series by id in hidden input
+  function onDeleteEvent(){
+    const id = eventIdInput.value;
+    if(!id) return;
+    if(!confirm('Delete this event and its entire series?')) return;
+    events = events.filter(x => x.id !== id);
+    saveEvents();
+    clearScheduledReminder(id);
+    closeEventModal();
+    render();
+  }
+
+  // close modal by clicking outside
+  window.addEventListener('click', (e)=>{
+    if(e.target === eventModal) closeEventModal();
+  });
+
+  /* ----------------------
+     Export / Import
+     ---------------------- */
+
+  function exportBackup(){
+    const payload = { exportedAt: new Date().toISOString(), events };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `calendar-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportFile(ev){
+    const file = ev.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      try {
+        const data = JSON.parse(e.target.result);
+        if(!data || !Array.isArray(data.events)) { alert('Invalid backup file'); return; }
+        if(!confirm('Import will merge backup events into current events. Events with duplicate IDs will be assigned new IDs. Continue?')) return;
+        const existingIds = new Set(events.map(x=>x.id));
+        const added = [];
+        for(const src of data.events){
+          const copy = {
+            id: src.id || uid(),
+            title: src.title || 'Untitled',
+            desc: src.desc || '',
+            date: src.date || todayISO(),
+            time: src.time || '',
+            color: src.color || 'w3-blue',
+            reminderMins: typeof src.reminderMins === 'number' ? src.reminderMins : 15,
+            repeat: src.repeat || 'none'
+          };
+          if(existingIds.has(copy.id)){
+            copy.id = uid();
+          }
+          events.push(copy);
+          existingIds.add(copy.id);
+          added.push(copy);
+        }
+        saveEvents();
+        scheduleAllReminders();
+        render();
+        alert(`Imported ${added.length} events.`);
+      } catch(err){
+        console.error(err);
+        alert('Failed to import file.');
+      } finally {
+        $('importFile').value = '';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  /* ----------------------
+     Notifications / Reminders
+     ---------------------- */
+
+  async function ensureNotificationPermission(){
+    if(!('Notification' in window)) return false;
+    if(Notification.permission === 'granted') return true;
+    if(Notification.permission === 'denied') return false;
+    try {
+      const perm = await Notification.requestPermission();
+      return perm === 'granted';
+    } catch(e){ return false; }
+  }
+
+  // schedule setTimeout for next occurrence of every event (only next occurrence)
+  function scheduleAllReminders(){
+    // clear all existing
+    for(const k in scheduledReminders){
+      try { clearTimeout(scheduledReminders[k]); } catch(e){}
+    }
+    scheduledReminders = {};
+
+    events.forEach(async (ev) => {
+      if(typeof ev.reminderMins !== 'number' || ev.reminderMins < 0) return;
+      const occ = nextOccurrenceDate(ev, false); // next strictly > now
+      if(!occ) return;
+      const remindAt = new Date(occ.getTime() - ev.reminderMins * 60000);
+      const delay = remindAt.getTime() - Date.now();
+      if(delay <= 0) return;
+      // too-far future check for setTimeout (some browsers cap to ~2^31-1 ms)
+      const MAX_TIMEOUT = 2147483647;
+      if(delay > MAX_TIMEOUT) return; // we'll reschedule on next page load
+      const hasPerm = await ensureNotificationPermission();
+      if(!hasPerm) return;
+      const tid = setTimeout(()=>{
+        showNotification(ev, occ);
+        delete scheduledReminders[ev.id];
+        // schedule the next occurrence after firing (if still repeating)
+        scheduleAllReminders();
+      }, delay);
+      scheduledReminders[ev.id] = tid;
+    });
+  }
+
+  function clearScheduledReminder(id){
+    if(scheduledReminders[id]) {
+      try{ clearTimeout(scheduledReminders[id]); }catch(e){}
+      delete scheduledReminders[id];
+    }
+  }
+
+  function showNotification(ev, occurrenceDate){
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    const when = (ev.time ? `${formatDateParts(new Date(occurrenceDate))} ${ev.time}` : `${formatDateParts(new Date(occurrenceDate))}`);
+    const body = (ev.desc ? ev.desc + '\n' : '') + `When: ${when}`;
+    try {
+      const n = new Notification(ev.title, { body, tag: ev.id, renotify: true });
+      n.onclick = ()=> window.focus();
+    } catch(e){
+      console.warn('Notification failed', e);
+    }
+  }
+
+  /* ----------------------
+     Theme (dark/light)
+     ---------------------- */
+  function restoreTheme(){
+    const t = localStorage.getItem('local_calendar_theme') || 'light';
+    applyTheme(t);
+    const radios = document.getElementsByName('theme');
+    for(const r of radios) r.checked = (r.value === t);
+  }
+  function applyTheme(name){
+    if(name === 'dark'){
+      document.body.classList.add('dark-mode');
+      document.body.classList.remove('w3-light-grey');
+      document.querySelector('.calendar-header').classList.remove('w3-white');
+      document.querySelector('.calendar-header').classList.add('w3-black');
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.body.classList.add('w3-light-grey');
+      document.querySelector('.calendar-header').classList.remove('w3-black');
+      document.querySelector('.calendar-header').classList.add('w3-white');
+    }
+  }
+
+  /* ----------------------
+     Boot
+     ---------------------- */
+
+  // Initialize flows
+  function boot(){
+    loadEvents();
+    initUI();
+    restoreTheme();
+    render();
+    scheduleAllReminders();
+    // keyboard: Ctrl/Cmd+N -> new event today
+    window.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n'){
+        openEventModalForOccurrence(null, todayISO());
+        e.preventDefault();
+      }
+    });
+    // expose a small debug API if you like to poke around
+    window.MINI_CAL = {
+      getEvents: ()=> events,
+      addTestEvent: ()=> {
+        const id = uid();
+        const d = new Date(); d.setDate(d.getDate()+1);
+        const iso = formatDateParts(d);
+        const ev = { id, title: 'Test '+id.slice(-3), desc:'sample', date:iso, time:'09:00', color:'w3-orange', reminderMins:10, repeat:'none' };
+        events.push(ev); saveEvents(); render(); scheduleAllReminders();
+      }
+    };
+  }
+
+  // run
+  boot();
+
+})();
+</script>
+
+
+
+<script>
+
+(function attachSettingsPortal(){
+  const wrapper = document.querySelector('.w3-dropdown-hover');
+  if(!wrapper) return;
+  const trigger = wrapper.querySelector('button');
+  const content = wrapper.querySelector('.w3-dropdown-content');
+  if(!trigger || !content) return;
+
+  // move the dropdown to body so it's outside any clipping/staking contexts
+  content.classList.add('portal-dropdown');
+  content.style.display = 'none';
+  // keep minimal inline sizing so it doesn't shrink after moving
+  content.style.minWidth = content.offsetWidth ? content.offsetWidth + 'px' : '140px';
+  document.body.appendChild(content);
+
+  function positionDropdown(){
+    const rect = trigger.getBoundingClientRect();
+    const margin = 6;
+    // place below button
+    let left = rect.left + window.scrollX;
+    let top = rect.bottom + window.scrollY + margin;
+    // constrain to viewport
+    const cw = content.offsetWidth;
+    if(left + cw > window.scrollX + window.innerWidth) {
+      left = Math.max(window.scrollX + 8, window.scrollX + window.innerWidth - cw - 8);
+    }
+    content.style.left = left + 'px';
+    content.style.top = top + 'px';
+  }
+
+  // toggle on click
+  trigger.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(content.style.display === 'block'){
+      content.style.display = 'none';
+      return;
+    }
+    // hide any other portal dropdowns
+    document.querySelectorAll('.portal-dropdown').forEach(d => d.style.display = 'none');
+    positionDropdown();
+    content.style.display = 'block';
+  });
+
+  // close on outside click and reposition on scroll/resize
+  window.addEventListener('click', ()=> content.style.display = 'none');
+  window.addEventListener('resize', ()=>{ if(content.style.display === 'block') positionDropdown(); });
+  window.addEventListener('scroll', ()=>{ if(content.style.display === 'block') positionDropdown(); }, true);
+})();
+</script>
+
+</body>
+</html>

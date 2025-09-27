@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tool-card {
+            display: none;
+        }
+        .tool-card.active {
+            display: block;
+        }
+        #rich-text-editor {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            min-height: 150px;
+        }
+        #char-table td, #char-table th {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-800 text-white p-6 overflow-y-auto">
+            <h1 class="text-2xl font-bold mb-8">Internal Tools</h1>
+            <nav class="space-y-4">
+                <h2 class="text-xs uppercase text-gray-400 font-semibold mb-3">Categories</h2>
+                <!-- Conversions Category -->
+                <div>
+                    <a href="#conversions" class="flex items-center py-2 px-3 rounded hover:bg-gray-700 nav-category" data-category="conversions">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        Conversions
+                    </a>
+                    <ul class="ml-6 mt-2 space-y-2 text-sm" id="tools-conversions">
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="temp-converter">Temperature</a></li>
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="measurement-converter">Measurements</a></li>
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="time-converter">24-12 Hour Clock</a></li>
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="speed-converter">MPH/KPH</a></li>
+                    </ul>
+                </div>
+                <!-- Date Calculation Category -->
+                <div>
+                    <a href="#date-calc" class="flex items-center py-2 px-3 rounded hover:bg-gray-700 nav-category" data-category="date-calc">
+                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Date Calculation
+                    </a>
+                    <ul class="ml-6 mt-2 space-y-2 text-sm" id="tools-date-calc">
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="date-calculator">Date Calculator</a></li>
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="age-calculator">Age Calculator</a></li>
+                    </ul>
+                </div>
+                <!-- List Converters -->
+                <div>
+                     <a href="#list-converters" class="flex items-center py-2 px-3 rounded hover:bg-gray-700 nav-category" data-category="list-converters">
+                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        List Converters
+                    </a>
+                     <ul class="ml-6 mt-2 space-y-2 text-sm" id="tools-list-converters">
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="list-converter">List Type Converter</a></li>
+                    </ul>
+                </div>
+                 <!-- HTML Tools -->
+                <div>
+                     <a href="#html-tools" class="flex items-center py-2 px-3 rounded hover:bg-gray-700 nav-category" data-category="html-tools">
+                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        HTML Tools
+                    </a>
+                     <ul class="ml-6 mt-2 space-y-2 text-sm" id="tools-html-tools">
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="char-finder">Special Characters</a></li>
+                        <li><a href="#" class="nav-link block hover:text-gray-300" data-tool="text-formatter">Text Formatter</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <div id="content">
+                <!-- Temperature Converter -->
+                <div id="temp-converter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Temperature Converter</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="fahrenheit" class="block text-sm font-medium text-gray-700">Fahrenheit (°F)</label>
+                            <input type="number" id="fahrenheit" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                        </div>
+                        <div>
+                            <label for="celsius" class="block text-sm font-medium text-gray-700">Celsius (°C)</label>
+                            <input type="number" id="celsius" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Measurement Converter -->
+                <div id="measurement-converter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Measurement Converter</h2>
+                
+                    <!-- Length Section -->
+                    <h3 class="text-lg font-medium text-gray-800 mt-4 mb-3 border-b pb-2">Length</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="meters" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Meters"><span class="text-center font-bold">=</span><input type="number" id="feet" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Feet"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="cm" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Centimeters"><span class="text-center font-bold">=</span><input type="number" id="inches" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Inches"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="meters_yard" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Meters"><span class="text-center font-bold">=</span><input type="number" id="yards" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Yards"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="fathoms" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Fathoms"><span class="text-center font-bold">=</span><input type="number" id="fathom_feet" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Feet"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="km" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Kilometers"><span class="text-center font-bold">=</span><input type="number" id="miles" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Miles"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="nautical_miles" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Nautical Miles"><span class="text-center font-bold">=</span><input type="number" id="miles_nm" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Miles"></div>
+                    </div>
+                
+                    <!-- Weight Section -->
+                    <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3 border-b pb-2">Weight</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="kilos" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Kilograms"><span class="text-center font-bold">=</span><input type="number" id="pounds_kg" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pounds"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="grams" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Grams"><span class="text-center font-bold">=</span><input type="number" id="ounces_g" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Ounces"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="pounds_st" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pounds"><span class="text-center font-bold">=</span><input type="number" id="stone" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Stone"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="metric_ton" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Tonne (Metric)"><span class="text-center font-bold">=</span><input type="number" id="pounds_mt" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pounds"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="short_ton" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Short Ton (US)"><span class="text-center font-bold">=</span><input type="number" id="pounds_st_us" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pounds"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="long_ton" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Long Ton (UK)"><span class="text-center font-bold">=</span><input type="number" id="pounds_lt_uk" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pounds"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="troy_ounce" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Troy Ounce"><span class="text-center font-bold">=</span><input type="number" id="ounces_troy" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Ounces (Avdp)"></div>
+                    </div>
+                
+                     <!-- Volume Section -->
+                    <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3 border-b pb-2">Volume</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="liters" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Liters"><span class="text-center font-bold">=</span><input type="number" id="gallons" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Gallons"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"><input type="number" id="pints" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Pints"><span class="text-center font-bold">=</span><input type="number" id="quarts" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Quarts"></div>
+                    </div>
+                </div>
+
+                <!-- Time Converter -->
+                <div id="time-converter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">24-Hour to 12-Hour Clock Converter</h2>
+                    <div>
+                        <label for="time24" class="block text-sm font-medium text-gray-700">Enter 24-Hour Time (e.g., 14:30)</label>
+                        <input type="text" id="time24" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="HH:MM">
+                        <button id="convert-time-btn" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Convert</button>
+                        <p id="time12-result" class="mt-4 text-lg font-medium text-gray-900"></p>
+                    </div>
+                </div>
+
+                <!-- Speed Converter -->
+                <div id="speed-converter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">MPH to KPH Converter</h2>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="mph" class="block text-sm font-medium text-gray-700">Miles per hour (MPH)</label>
+                            <input type="number" id="mph" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        </div>
+                        <div>
+                            <label for="kph" class="block text-sm font-medium text-gray-700">Kilometers per hour (KPH)</label>
+                            <input type="number" id="kph" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Calculator -->
+                <div id="date-calculator" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Date Calculator</h2>
+                    <div class="space-y-4">
+                         <div>
+                            <label for="start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
+                            <input type="date" id="start-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="days-offset" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="Number of days">
+                            <select id="day-type" class="rounded-md border-gray-300">
+                                <option value="days">Days</option>
+                                <option value="business_days">Business Days</option>
+                            </select>
+                            <select id="add-subtract" class="rounded-md border-gray-300">
+                                <option value="add">From</option>
+                                <option value="subtract">Before</option>
+                            </select>
+                        </div>
+                        <button id="calculate-date-btn" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Calculate</button>
+                        <p id="date-result" class="mt-4 text-lg font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                
+                <!-- Age Calculator -->
+                <div id="age-calculator" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                     <h2 class="text-xl font-semibold mb-4">Age Calculator</h2>
+                     <div class="space-y-4">
+                        <div>
+                            <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                            <input type="date" id="dob" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        </div>
+                        <div>
+                            <label for="target-year" class="block text-sm font-medium text-gray-700">Target Year (optional)</label>
+                            <input type="number" id="target-year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" placeholder="e.g., 2030">
+                        </div>
+                        <button id="calculate-age-btn" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Calculate Age</button>
+                        <p id="age-result" class="mt-4 text-lg font-medium text-gray-900"></p>
+                    </div>
+                </div>
+
+                <!-- List Type Converter -->
+                <div id="list-converter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">List Type Converter</h2>
+                    <div class="space-y-4">
+                         <div>
+                            <label for="number-input" class="block text-sm font-medium text-gray-700">Enter a Number</label>
+                            <input type="number" id="number-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        </div>
+                        <div class="space-y-2">
+                             <p><strong>Roman Numeral:</strong> <span id="roman-result"></span></p>
+                             <p><strong>Alphabetical List:</strong> <span id="alpha-result"></span></p>
+                             <p><strong>Tally Marks:</strong> <span id="tally-result" class="font-mono text-lg"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HTML Special Characters -->
+                <div id="char-finder" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">HTML Special Character Finder</h2>
+                    <div class="h-96 overflow-y-scroll border rounded-lg">
+                        <table id="char-table" class="w-full text-sm">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th>Character</th>
+                                    <th>Name</th>
+                                    <th>HTML Entity</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="char-table-body">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Text Formatter -->
+                <div id="text-formatter" class="tool-card p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Text Formatter</h2>
+                    <div class="space-y-4">
+                        <div class="flex space-x-2 p-2 bg-gray-100 rounded-md">
+                             <button class="px-3 py-1 bg-white border rounded shadow-sm font-bold" data-command="bold">B</button>
+                             <button class="px-3 py-1 bg-white border rounded shadow-sm italic" data-command="italic">I</button>
+                             <button class="px-3 py-1 bg-white border rounded shadow-sm underline" data-command="underline">U</button>
+                             <button class="px-3 py-1 bg-white border rounded shadow-sm" data-command="insertUnorderedList">UL</button>
+                             <button class="px-3 py-1 bg-white border rounded shadow-sm" data-command="insertOrderedList">OL</button>
+                        </div>
+                        <div id="rich-text-editor" contenteditable="true"></div>
+                        <button id="generate-html-btn" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Generate HTML</button>
+                        <textarea id="html-output" class="mt-4 w-full h-40 font-mono text-sm bg-gray-900 text-green-400 rounded-md p-2" readonly placeholder="HTML code will appear here..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const toolCards = document.querySelectorAll('.tool-card');
+
+            // --- Navigation ---
+            function showTool(toolId) {
+                toolCards.forEach(card => {
+                    card.classList.remove('active');
+                });
+                const toolToShow = document.getElementById(toolId);
+                if (toolToShow) {
+                    toolToShow.classList.add('active');
+                }
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const toolId = this.dataset.tool;
+                    navLinks.forEach(l => l.classList.remove('font-bold', 'text-white'));
+                    this.classList.add('font-bold', 'text-white');
+                    showTool(toolId);
+                });
+            });
+
+            // Show the first tool by default
+            const firstLink = document.querySelector('.nav-link');
+            if(firstLink){
+                showTool(firstLink.dataset.tool);
+                firstLink.classList.add('font-bold', 'text-white');
+            }
+
+
+            // --- Tool Logic ---
+
+            // 1. Temperature Converter
+            const fahrenheitInput = document.getElementById('fahrenheit');
+            const celsiusInput = document.getElementById('celsius');
+            fahrenheitInput.addEventListener('input', function() {
+                const f = parseFloat(this.value);
+                celsiusInput.value = !isNaN(f) ? ((f - 32) * 5 / 9).toFixed(2) : '';
+            });
+            celsiusInput.addEventListener('input', function() {
+                const c = parseFloat(this.value);
+                fahrenheitInput.value = !isNaN(c) ? ((c * 9 / 5) + 32).toFixed(2) : '';
+            });
+            
+            // 2. Measurement Converter
+            function setupConverter(inputId1, inputId2, factor) {
+                const input1 = document.getElementById(inputId1);
+                const input2 = document.getElementById(inputId2);
+                input1.addEventListener('input', () => {
+                    const val = parseFloat(input1.value);
+                    input2.value = !isNaN(val) ? (val * factor).toPrecision(6) : '';
+                });
+                input2.addEventListener('input', () => {
+                    const val = parseFloat(input2.value);
+                    input1.value = !isNaN(val) ? (val / factor).toPrecision(6) : '';
+                });
+            }
+            // Length
+            setupConverter('meters', 'feet', 3.28084);
+            setupConverter('cm', 'inches', 0.393701);
+            setupConverter('meters_yard', 'yards', 1.09361);
+            setupConverter('fathoms', 'fathom_feet', 6);
+            setupConverter('km', 'miles', 0.621371);
+            setupConverter('nautical_miles', 'miles_nm', 1.15078);
+            // Weight
+            setupConverter('kilos', 'pounds_kg', 2.20462);
+            setupConverter('grams', 'ounces_g', 0.035274);
+            setupConverter('pounds_st', 'stone', 0.0714286);
+            setupConverter('metric_ton', 'pounds_mt', 2204.62);
+            setupConverter('short_ton', 'pounds_st_us', 2000);
+            setupConverter('long_ton', 'pounds_lt_uk', 2240);
+            setupConverter('troy_ounce', 'ounces_troy', 1.09714);
+            // Volume
+            setupConverter('liters', 'gallons', 0.264172);
+            setupConverter('pints', 'quarts', 0.5);
+
+
+            // 3. Time Converter
+            document.getElementById('convert-time-btn').addEventListener('click', () => {
+                const time24 = document.getElementById('time24').value;
+                const resultP = document.getElementById('time12-result');
+                if (time24 && time24.includes(':')) {
+                    const [hours, minutes] = time24.split(':');
+                    let H = parseInt(hours, 10);
+                    let M = parseInt(minutes, 10);
+                    
+                    if (!isNaN(H) && !isNaN(M) && H >= 0 && H <= 23 && M >= 0 && M <= 59) {
+                        const ampm = H >= 12 ? 'PM' : 'AM';
+                        H = H % 12 || 12; // Convert 0 to 12 for midnight
+                        const formattedMinutes = M < 10 ? '0' + M : M;
+                        resultP.textContent = `Converted Time: ${H}:${formattedMinutes} ${ampm}`;
+                    } else {
+                        resultP.textContent = 'Please enter a valid time in HH:MM format.';
+                    }
+                } else {
+                    resultP.textContent = 'Please enter a valid time in HH:MM format.';
+                }
+            });
+
+            // 4. Speed Converter
+            const mphInput = document.getElementById('mph');
+            const kphInput = document.getElementById('kph');
+            mphInput.addEventListener('input', () => {
+                const mph = parseFloat(mphInput.value);
+                kphInput.value = !isNaN(mph) ? (mph * 1.60934).toFixed(2) : '';
+            });
+            kphInput.addEventListener('input', () => {
+                const kph = parseFloat(kphInput.value);
+                mphInput.value = !isNaN(kph) ? (kph / 1.60934).toFixed(2) : '';
+            });
+
+            // 5. Date Calculator
+            document.getElementById('calculate-date-btn').addEventListener('click', () => {
+                const startDateStr = document.getElementById('start-date').value;
+                if (!startDateStr) {
+                    document.getElementById('date-result').textContent = "Please select a start date.";
+                    return;
+                }
+                const startDate = new Date(startDateStr + 'T00:00:00');
+                const daysOffset = parseInt(document.getElementById('days-offset').value, 10);
+                const dayType = document.getElementById('day-type').value;
+                const addSubtract = document.getElementById('add-subtract').value;
+                const resultP = document.getElementById('date-result');
+                
+                if (isNaN(startDate.getTime()) || isNaN(daysOffset)) {
+                    resultP.textContent = "Please enter a valid date and number of days.";
+                    return;
+                }
+
+                let newDate = new Date(startDate);
+                let daysToMove = addSubtract === 'add' ? daysOffset : -daysOffset;
+
+                if (dayType === 'days') {
+                    newDate.setDate(newDate.getDate() + daysToMove);
+                } else { // Business days
+                    let addedDays = 0;
+                    let increment = daysToMove > 0 ? 1 : -1;
+                    while (addedDays < Math.abs(daysToMove)) {
+                        newDate.setDate(newDate.getDate() + increment);
+                        const dayOfWeek = newDate.getDay();
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not Sunday or Saturday
+                            addedDays++;
+                        }
+                    }
+                }
+                resultP.textContent = "Result: " + newDate.toLocaleDateString();
+            });
+            
+            // 6. Age Calculator
+            document.getElementById('calculate-age-btn').addEventListener('click', () => {
+                const dobString = document.getElementById('dob').value;
+                const targetYear = document.getElementById('target-year').value;
+                const resultP = document.getElementById('age-result');
+
+                if (!dobString) {
+                    resultP.textContent = "Please enter a date of birth.";
+                    return;
+                }
+                const dob = new Date(dobString + 'T00:00:00');
+                let targetDate = new Date();
+                let isTargetYear = false;
+
+                if (targetYear && !isNaN(parseInt(targetYear))) {
+                    // Create a date in the target year using the month and day from DOB
+                    targetDate = new Date(parseInt(targetYear), dob.getMonth(), dob.getDate());
+                    isTargetYear = true;
+                }
+                
+                let age = targetDate.getFullYear() - dob.getFullYear();
+                const m = targetDate.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && targetDate.getDate() < dob.getDate())) {
+                    age--;
+                }
+                
+                if (isTargetYear) {
+                     resultP.textContent = `Age in ${targetYear} will be ${age}.`;
+                } else {
+                     resultP.textContent = `Current age is ${age}.`;
+                }
+            });
+
+            // 7. List Type Converter
+            document.getElementById('number-input').addEventListener('input', e => {
+                const num = parseInt(e.target.value, 10);
+                const romanEl = document.getElementById('roman-result');
+                const alphaEl = document.getElementById('alpha-result');
+                const tallyEl = document.getElementById('tally-result');
+
+                if (isNaN(num) || num <= 0) {
+                    romanEl.textContent = '';
+                    alphaEl.textContent = '';
+                    tallyEl.textContent = '';
+                    return;
+                }
+                // Roman
+                romanEl.textContent = toRoman(num);
+                // Alpha
+                alphaEl.textContent = toAlpha(num);
+                // Tally
+                tallyEl.textContent = toTally(num);
+            });
+
+            function toRoman(num) {
+                if (num > 3999) return "Number too large";
+                const map = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
+                let result = '';
+                for (let key in map) {
+                    while (num >= map[key]) {
+                        result += key;
+                        num -= map[key];
+                    }
+                }
+                return result;
+            }
+
+            function toAlpha(num) {
+                let result = '';
+                let t;
+                while(num > 0){
+                    t = (num - 1) % 26;
+                    result = String.fromCharCode(65 + t) + result;
+                    num = Math.floor((num - 1) / 26);
+                }
+                return result || undefined;
+            }
+            
+            function toTally(num) {
+                const fives = Math.floor(num / 5);
+                const ones = num % 5;
+                // Using a special character for the 5-group for better visuals
+                return 'H'.repeat(fives).replace(/H/g, '<s>||||</s> ') + '|'.repeat(ones);
+            }
+
+            // 8. HTML Character Finder
+            const specialChars = [
+                { char: '©', name: 'Copyright', entity: '&copy;' }, { char: '®', name: 'Registered TM', entity: '&reg;' },
+                { char: '™', name: 'Trademark', entity: '&trade;' }, { char: '€', name: 'Euro', entity: '&euro;' },
+                { char: '£', name: 'Pound', entity: '&pound;' }, { char: '¥', name: 'Yen', entity: '&yen;' },
+                { char: '¢', name: 'Cent', entity: '&cent;' }, { char: '§', name: 'Section', entity: '&sect;' },
+                { char: '°', name: 'Degree', entity: '&deg;' }, { char: '•', name: 'Bullet', entity: '&bull;' },
+                { char: '…', name: 'Ellipsis', entity: '&hellip;' }, { char: '‘', name: 'Left Single Quote', entity: '&lsquo;' },
+                { char: '’', name: 'Right Single Quote', entity: '&rsquo;' }, { char: '“', name: 'Left Double Quote', entity: '&ldquo;' },
+                { char: '”', name: 'Right Double Quote', entity: '&rdquo;' }, { char: '–', name: 'En Dash', entity: '&ndash;' },
+                { char: '—', name: 'Em Dash', entity: '&mdash;' }, { char: '«', name: 'Left-pointing double angle quotation mark', entity: '&laquo;' },
+                { char: '»', name: 'Right-pointing double angle quotation mark', entity: '&raquo;' },
+                { char: '←', name: 'Left Arrow', entity: '&larr;'}, { char: '↑', name: 'Up Arrow', entity: '&uarr;'},
+                { char: '→', name: 'Right Arrow', entity: '&rarr;'}, { char: '↓', name: 'Down Arrow', entity: '&darr;'}
+            ];
+            const charTableBody = document.getElementById('char-table-body');
+            specialChars.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="text-xl">${item.char}</td>
+                    <td>${item.name}</td>
+                    <td class="font-mono">${item.entity}</td>
+                    <td>
+                        <button class="copy-btn text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded" data-text="${item.char}">Copy Char</button>
+                        <button class="copy-btn text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded" data-text="${item.entity}">Copy Entity</button>
+                    </td>
+                `;
+                charTableBody.appendChild(row);
+            });
+            charTableBody.addEventListener('click', e => {
+                if (e.target.classList.contains('copy-btn')) {
+                    const textToCopy = e.target.dataset.text;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const originalText = e.target.textContent;
+                        e.target.textContent = 'Copied!';
+                        setTimeout(() => e.target.textContent = originalText, 1500);
+                    });
+                }
+            });
+
+            // 9. Text Formatter
+            const editor = document.getElementById('rich-text-editor');
+            const commandButtons = document.querySelectorAll('[data-command]');
+            commandButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    document.execCommand(button.dataset.command, false, null);
+                    editor.focus();
+                });
+            });
+            document.getElementById('generate-html-btn').addEventListener('click', () => {
+                document.getElementById('html-output').value = editor.innerHTML;
+            });
+        });
+    </script>
+
+</body>
+</html>
+
