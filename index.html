@@ -96,55 +96,118 @@
            
          }
 
+<!-- DROPDOWN MENU PORTION OF NAV CSS -->
 
-ul.topnav {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    width: 100%;
+a {
+  text-decoration: none;
 }
 
-ul.topnav li {float: left;}
-
-ul.topnav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+.dropdown {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  width: 132px;
 }
 
-ul.topnav li:hover a:not(.active) {
-    background-color: #D3D3D3;
-    color: #000;
-}
-
-ul.topnav li a.active {
-    background-color: #D2691E;
-    color: white;
-}
-
-ul.topnav li.right {float: right;}
-
-@media screen and (max-width: 600px){
-    ul.topnav,
-    ul.topnav {position: unset}
-    ul.topnav li.right, 
-    ul.topnav li {float: none;}
-}
-
-ul.topnav .dropdown-content {
-  display: none;
+.dropdown-text {
+  cursor: pointer;
   position: absolute;
+  text-indent: 10px;
+  line-height: 18px;
+  background-color: transparent;
+  border: 1px solid #777;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(255,255,255, .9) inset, 0 1px 3px rgba(0,0,0, .1);
+  width: 100%;
 }
-ul.topnav .dropdown-content a {
-  color: black;
+
+.dropdown-text:after {
+  position: absolute;
+  right: 6px;
+  top: 15px;
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 5px 4px 0 4px;
+  border-color: #555 transparent transparent transparent;
 }
-ul.topnav .dropdown:hover > .dropdown-content {
+
+.dropdown-text,
+.dropdown-content a {
+  color: #333;
+  text-shadow: 0 1px #fff;
+}
+
+.dropdown-toggle {
+  font-size: 0;
+  z-index: 1;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  border: none;
+  padding: 0;
+  margin: 0 0 0 1px;
+  background: transparent;
+  text-indent: -10px;
+  height: 34px;
+  width: 100%;
+}
+
+.dropdown-toggle:focus {
+  outline: 0;
+}
+
+.dropdown-content {
+  -webkit-transition: all .25s ease;
+  -moz-transition: all .25s ease;
+  -ms-transition: all .25s ease;
+  -o-transition: all .25s ease;
+  transition: all .25s ease;
+  list-style-type: none;
+  position: absolute;
+  top: 32px;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  visibility:hidden;
+  border-radius: 3px;
+  text-indent: 10px;
+  line-height: 32px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  width: 140px;
+}
+
+.dropdown-content a {
   display: block;
+}
+
+.dropdown-content a:hover {
+  background: #e8e8e8;
+}
+
+
+.dropdown-toggle:hover ~ .dropdown-text,
+.dropdown-toggle:focus ~ .dropdown-text {
+  background-color: #e8e8e8;
+}
+
+.dropdown-toggle:focus ~ .dropdown-text {
+  box-shadow: 0 1px 3px rgba(0,0,0, .2) inset, 0 1px 0 rgba(255,255,255, 0.8);
+  z-index: 2;
+}
+
+.dropdown-toggle:focus ~ .dropdown-text:after {
+  border-width: 0 4px 5px 4px;
+  border-color: transparent transparent #555 transparent;
+}
+
+.dropdown-content:hover,
+.dropdown-toggle:focus ~ .dropdown-content {
+  opacity: 1;
+  visibility:visible;
+  top: 42px;
 }
          
 
@@ -194,13 +257,16 @@ ul.topnav .dropdown:hover > .dropdown-content {
                     <a class="p-2 link-secondary" href="http://100.118.143.46:8069/">Odoo</a>
                     <a class="p-2 link-secondary" href="emails.html">əm@il</a>
                     <a class="p-2 link-secondary" href="files.html">.fls</a>
-                      <li class="dropdown right">
-                        <a href="javascript:void(0)" class="dropbtn p-2 link-secondary">Calculators</a>
-                            <div class="dropdown-content">
-                               <a href="#" class="dropped">Link 1</a>
-                               <a href="#" class="dropped">Link 2</a>
-                               <a href="#" class="dropped">Link 3</a>
-                            </div>
+
+                         <div class="dropdown">
+                             <input class="dropdown-toggle" type="text">
+                                <div class="dropdown-text">Account</div>
+                                   <ul class="dropdown-content">
+                                        <li><a href="#">Settings</a></li>
+                                        <li><a href="#">Projects</a></li>
+                                        <li><a href="#">Log out</a></li>
+                                  </ul>
+                               </div>
                     <a class="p-2 link-secondary" href="http://io1.duckdns.org">Casa</a>
                     <a class="p-2 link-secondary" href='asylum_ead.html'>EAD Calculator</a>
                     <a class="p-2 link-secondary" href='jostools.html'>Tools</a>
