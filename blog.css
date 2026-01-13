@@ -30,6 +30,7 @@ a:hover {
 
 .blog-header-logo:hover {
     text-decoration: none;
+ color:lawngreen;
 }
 
 h1,
@@ -40,6 +41,7 @@ h5,
 h6 {
     font-family: "Playfair Display", Georgia, "Times New Roman",
         serif /*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+ color:#bbb;
 }
 
 .display-4 {
@@ -70,7 +72,7 @@ h6 {
 }
 
 .nav-links  {
-    color:gray;
+    color:#fff;
     font-family:poppins;
     font-weight:900;
     font-size:1em;
