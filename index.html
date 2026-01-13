@@ -6,20 +6,31 @@
         <meta name="description" content="" />
         <meta
             name="author"
-            content="Bootstrap people made this" />
-        <title>3606</title>
+            content="The Bootstrap people made the template I ruined with this website." />
 
-        <link
+     <link
             rel="canonical"
             href="https://3606.org" />
 
-        <link href="/bootstrap.min.css" rel="stylesheet" />
+     
+     <title>My Stuffz</title>
 
-   <!-- Custom styles for this template -->
+
+     <!-- GOOGLE FONTS -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Caveat:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jacquard+12&family=Reenie+Beanie&family=Roboto:ital,wght@0,100..900;1,100..900&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=VT323&family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+  
         <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet" />
             <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
-        <!-- Custom styles for this template -->
-        <link href="blog.css" rel="stylesheet" />
+
+     
+     <!-- STYLESHEETS -->
+     
+     <link href="blog.css" rel="stylesheet" />
+     <link href="/bootstrap.min.css" rel="stylesheet" />
+
 
      
         <style>
@@ -86,6 +97,57 @@
          }
 
 
+ul.topnav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+ul.topnav li {float: left;}
+
+ul.topnav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+ul.topnav li:hover a:not(.active) {
+    background-color: #D3D3D3;
+    color: #000;
+}
+
+ul.topnav li a.active {
+    background-color: #D2691E;
+    color: white;
+}
+
+ul.topnav li.right {float: right;}
+
+@media screen and (max-width: 600px){
+    ul.topnav,
+    ul.topnav {position: unset}
+    ul.topnav li.right, 
+    ul.topnav li {float: none;}
+}
+
+ul.topnav .dropdown-content {
+  display: none;
+  position: absolute;
+}
+ul.topnav .dropdown-content a {
+  color: black;
+}
+ul.topnav .dropdown:hover > .dropdown-content {
+  display: block;
+}
+         
+
    </style>
     </head>
     <body>
@@ -97,7 +159,7 @@
                         <a class="link-secondary" href="/subscribe.html">Subscribe</a>
                     </div>
                     <div class="col-4 text-center">
-                        <a class="blog-header-logo text-dark" href="#">3606</a>
+                        <a class="blog-header-logo text-dark" href="#">MY STUFFS</a>
                     </div>
                     <div
                         class="col-4 d-flex justify-content-end align-items-center">
@@ -114,14 +176,13 @@
                                 class="mx-3"
                                 role="img"
                                 viewBox="0 0 24 24">
-                                <title>Search</title>
+                                <title>Search for shit</title>
                                 <circle cx="10.5" cy="10.5" r="7.5" />
                                 <path d="M21 21l-5.2-5.2" />
                             </svg>
                         </a>
                         <a class="btn btn-sm btn-outline-secondary" href="#"
-                            >Log In</a
-                        >
+                            >Log In</a>
                     </div>
                 </div>
             </header>
@@ -129,14 +190,22 @@
             <div class="nav-scroller py-1 mb-2">
                 <nav class="nav d-flex justify-content-between">
                     <a class="p-2 link-secondary" href="https://www.leonhascal.github.io">Home</a>
-                    <a class="p-2 link-secondary" href="#">About</a>
-                    <a class="p-2 link-secondary" href="#">Notes</a>
-                    <a class="p-2 link-secondary" href="#">əm@il</a>
-                    <a class="p-2 link-secondary" href="#">.fls</a>
+                    <a class="p-2 link-secondary" href="about.html">About</a>
+                    <a class="p-2 link-secondary" href="http://100.118.143.46:8069/">Odoo</a>
+                    <a class="p-2 link-secondary" href="emails.html">əm@il</a>
+                    <a class="p-2 link-secondary" href="files.html">.fls</a>
+                      <li class="dropdown right">
+                        <a href="javascript:void(0)" class="dropbtn p-2 link-secondary">Calculators</a>
+                            <div class="dropdown-content">
+                               <a href="#" class="dropped">Link 1</a>
+                               <a href="#" class="dropped">Link 2</a>
+                               <a href="#" class="dropped">Link 3</a>
+                            </div>
                     <a class="p-2 link-secondary" href="http://io1.duckdns.org">Casa</a>
                     <a class="p-2 link-secondary" href='asylum_ead.html'>EAD Calculator</a>
                     <a class="p-2 link-secondary" href='jostools.html'>Tools</a>
-                    <a class="p-2 link-secondary" href="https://usimm.pikapod.net/">Wiki</a>
+                    <a class="p-2 link-secondary" href="https://usimm.pikapod.net/">Wiki (old)</a>
+                    <a class="p-2 link-secondary" href="http://100.118.143.46:8282/">Wiki (new)</a>
                     <a class="p-2 link-secondary" href="#">Contact</a>
                     <a class="p-2 link-secondary" href="links.html">Links</a>
                     <a class="p-2 link-secondary" href="cal.html">cal</a>
